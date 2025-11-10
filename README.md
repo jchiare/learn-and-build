@@ -51,7 +51,7 @@ npm install
 
 4. Set up environment variables:
 ```bash
-cp .env.example .env
+cp _env.example .env
 ```
 
 Edit `.env` and add your credentials:
