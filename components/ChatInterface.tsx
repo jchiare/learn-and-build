@@ -3,7 +3,7 @@
 import { Message } from 'ai';
 import { FormEvent, ChangeEvent } from 'react';
 
-interface ChatInterfaceProps {
+type ChatInterfaceProps = {
   messages: Message[];
   input: string;
   handleInputChange: (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => void;
@@ -12,9 +12,9 @@ interface ChatInterfaceProps {
   selectedModel: 'gpt-5' | 'sonnet-4.5';
   setSelectedModel: (model: 'gpt-5' | 'sonnet-4.5') => void;
   toggleSidebar: () => void;
-}
+};
 
-export default function ChatInterface({
+export function ChatInterface({
   messages,
   input,
   handleInputChange,

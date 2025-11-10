@@ -1,19 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import ProjectMemory from './ProjectMemory';
-import Learnings from './Learnings';
-import Goals from './Goals';
+import { ProjectMemory } from './ProjectMemory';
+import { Learnings } from './Learnings';
+import { Goals } from './Goals';
 
-interface SidebarProps {
-  isOpen: boolean;
+type SidebarProps = {
   onClose: () => void;
-}
+};
 
-export default function Sidebar({ isOpen, onClose }: SidebarProps) {
+export function Sidebar({ onClose }: SidebarProps) {
   const [activeSection, setActiveSection] = useState<'memory' | 'learning' | 'goals'>('memory');
-
-  if (!isOpen) return null;
 
   return (
     <div className="w-96 bg-white border-l border-gray-200 flex flex-col">
