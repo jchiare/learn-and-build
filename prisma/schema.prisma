@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model ChatMessage {
@@ -42,4 +43,16 @@ model Goal {
   status      String   @default("active") // "active", "completed", "archived"
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model NextSessionTodo {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @default("")
+  completed   Boolean  @default(false)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([order])
 }

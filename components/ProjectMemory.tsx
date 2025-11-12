@@ -3,15 +3,15 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-interface Memory {
+type Memory = {
   id: string;
   title: string;
   content: string;
   createdAt: string;
   updatedAt: string;
-}
+};
 
-export default function ProjectMemory() {
+export function ProjectMemory() {
   const queryClient = useQueryClient();
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);

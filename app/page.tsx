@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useChat } from '@ai-sdk/react';
-import ChatInterface from '@/components/ChatInterface';
-import Sidebar from '@/components/Sidebar';
+import { ChatInterface } from '@/components/ChatInterface';
+import { Sidebar } from '@/components/Sidebar';
 
 export default function Home() {
   const [selectedModel, setSelectedModel] = useState<'gpt-5' | 'sonnet-4.5'>('sonnet-4.5');

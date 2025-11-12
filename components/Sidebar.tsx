@@ -1,19 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import ProjectMemory from './ProjectMemory';
-import Learnings from './Learnings';
-import Goals from './Goals';
+import { ProjectMemory } from './ProjectMemory';
+import { Learnings } from './Learnings';
+import { Goals } from './Goals';
+import { NextSessionTodos } from './NextSessionTodos';
 
-interface SidebarProps {
-  isOpen: boolean;
+type SidebarProps = {
   onClose: () => void;
-}
+};
 
-export default function Sidebar({ isOpen, onClose }: SidebarProps) {
-  const [activeSection, setActiveSection] = useState<'memory' | 'learning' | 'goals'>('memory');
-
-  if (!isOpen) return null;
+export function Sidebar({ onClose }: SidebarProps) {
+  const [activeSection, setActiveSection] = useState<'next-session' | 'memory' | 'learning' | 'goals'>('next-session');
 
   return (
     <div className="w-96 bg-white border-l border-gray-200 flex flex-col">
@@ -31,10 +29,20 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-200">
+      <div className="flex border-b border-gray-200 overflow-x-auto">
+        <button
+          onClick={() => setActiveSection('next-session')}
+          className={`flex-1 px-3 py-3 text-xs font-medium transition-colors whitespace-nowrap ${
+            activeSection === 'next-session'
+              ? 'text-blue-600 border-b-2 border-blue-600'
+              : 'text-gray-600 hover:text-gray-800'
+          }`}
+        >
+          Next Session
+        </button>
         <button
           onClick={() => setActiveSection('memory')}
-          className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
+          className={`flex-1 px-3 py-3 text-xs font-medium transition-colors whitespace-nowrap ${
             activeSection === 'memory'
               ? 'text-blue-600 border-b-2 border-blue-600'
               : 'text-gray-600 hover:text-gray-800'
@@ -44,7 +52,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         </button>
         <button
           onClick={() => setActiveSection('learning')}
-          className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
+          className={`flex-1 px-3 py-3 text-xs font-medium transition-colors whitespace-nowrap ${
             activeSection === 'learning'
               ? 'text-blue-600 border-b-2 border-blue-600'
               : 'text-gray-600 hover:text-gray-800'
@@ -54,7 +62,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         </button>
         <button
           onClick={() => setActiveSection('goals')}
-          className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
+          className={`flex-1 px-3 py-3 text-xs font-medium transition-colors whitespace-nowrap ${
             activeSection === 'goals'
               ? 'text-blue-600 border-b-2 border-blue-600'
               : 'text-gray-600 hover:text-gray-800'
@@ -66,6 +74,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
+        {activeSection === 'next-session' && <NextSessionTodos />}
         {activeSection === 'memory' && <ProjectMemory />}
         {activeSection === 'learning' && <Learnings />}
         {activeSection === 'goals' && <Goals />}
