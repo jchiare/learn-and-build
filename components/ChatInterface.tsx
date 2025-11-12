@@ -5,7 +5,7 @@ import { FormEvent, ChangeEvent } from 'react';
 
 type ChatInterfaceProps = {
   messages: Message[];
-  input: string;
+  input?: string;
   handleInputChange: (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => void;
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
   isLoading: boolean;
@@ -88,7 +88,7 @@ export function ChatInterface({
         <form onSubmit={handleSubmit} className="flex space-x-4">
           <input
             type="text"
-            value={input}
+            value={input || ''}
             onChange={handleInputChange}
             placeholder="Type your message..."
             className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -96,7 +96,7 @@ export function ChatInterface({
           />
           <button
             type="submit"
-            disabled={isLoading || !input.trim()}
+            disabled={isLoading || !input?.trim()}
             className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Send
