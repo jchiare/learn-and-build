@@ -13,32 +13,32 @@ type KnowledgeCardProps = {
 
 const colorClasses = {
   blue: {
-    border: 'border-blue-500',
-    bg: 'bg-blue-50',
-    text: 'text-blue-700',
-    badge: 'bg-blue-500 text-white',
-    header: 'bg-gradient-to-r from-blue-50 to-blue-100',
+    border: 'border-gray-300',
+    bg: 'bg-gray-50',
+    text: 'text-gray-700',
+    badge: 'bg-gray-600 text-white',
+    header: 'bg-gray-100',
   },
   green: {
-    border: 'border-green-500',
-    bg: 'bg-green-50',
-    text: 'text-green-700',
-    badge: 'bg-green-500 text-white',
-    header: 'bg-gradient-to-r from-green-50 to-green-100',
+    border: 'border-gray-300',
+    bg: 'bg-gray-50',
+    text: 'text-gray-700',
+    badge: 'bg-gray-600 text-white',
+    header: 'bg-gray-100',
   },
   purple: {
-    border: 'border-purple-500',
-    bg: 'bg-purple-50',
-    text: 'text-purple-700',
-    badge: 'bg-purple-500 text-white',
-    header: 'bg-gradient-to-r from-purple-50 to-purple-100',
+    border: 'border-gray-300',
+    bg: 'bg-gray-50',
+    text: 'text-gray-700',
+    badge: 'bg-gray-600 text-white',
+    header: 'bg-gray-100',
   },
   amber: {
-    border: 'border-amber-500',
-    bg: 'bg-amber-50',
-    text: 'text-amber-700',
-    badge: 'bg-amber-500 text-white',
-    header: 'bg-gradient-to-r from-amber-50 to-amber-100',
+    border: 'border-gray-300',
+    bg: 'bg-gray-50',
+    text: 'text-gray-700',
+    badge: 'bg-gray-600 text-white',
+    header: 'bg-gray-100',
   },
 };
 
@@ -46,9 +46,9 @@ export function KnowledgeCard({ title, icon, count, color, children, onAdd }: Kn
   const colors = colorClasses[color];
 
   return (
-    <div className={`flex flex-col bg-white rounded-lg border-2 ${colors.border} shadow-sm overflow-hidden h-full`}>
+    <div className={`flex flex-col bg-white rounded-lg border ${colors.border} shadow-sm overflow-hidden h-full`}>
       {/* Header */}
-      <div className={`px-4 py-3 ${colors.header} border-b-2 ${colors.border} flex items-center justify-between`}>
+      <div className={`px-4 py-3 ${colors.header} border-b ${colors.border} flex items-center justify-between`}>
         <div className="flex items-center gap-2">
           <span className="text-2xl">{icon}</span>
           <h3 className={`font-semibold ${colors.text} text-sm`}>{title}</h3>
