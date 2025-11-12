@@ -120,17 +120,17 @@ export function Learnings() {
           />
           <div className="flex space-x-2">
             <button
-              type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-            >
-              {editingId ? 'Update' : 'Save'}
-            </button>
-            <button
               type="button"
               onClick={handleCancel}
               className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-400 transition-colors"
             >
               Cancel
+            </button>
+            <button
+              type="submit"
+              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            >
+              {editingId ? 'Update' : 'Save'}
             </button>
           </div>
         </form>
