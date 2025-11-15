@@ -1,10 +1,10 @@
 'use client';
 
-import { Message } from 'ai';
+import { UIMessage } from 'ai';
 import { FormEvent, ChangeEvent } from 'react';
 
 type ChatInterfaceProps = {
-  messages: Message[];
+  messages: UIMessage[];
   input?: string;
   handleInputChange: (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => void;
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
@@ -66,7 +66,11 @@ export function ChatInterface({
                   : 'bg-white text-gray-800 border border-gray-200'
               }`}
             >
-              <p className="whitespace-pre-wrap">{message.content}</p>
+              <p className="whitespace-pre-wrap">
+                {message.parts
+                  .map(part => (part.type === 'text' ? part.text : ''))
+                  .join('')}
+              </p>
             </div>
           </div>
         ))}
