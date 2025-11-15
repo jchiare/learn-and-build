@@ -31,5 +31,5 @@ export async function POST(req: Request) {
     }).catch(console.error);
   }
 
-  return result.toDataStreamResponse();
+  return result.toTextStreamResponse();
 }
