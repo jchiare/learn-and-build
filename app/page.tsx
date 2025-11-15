@@ -8,13 +8,28 @@ import { DashboardView } from '@/components/DashboardView';
 export default function Home() {
   const [selectedModel, setSelectedModel] = useState<'gpt-5' | 'sonnet-4.5'>('sonnet-4.5');
   const [isDashboardVisible, setIsDashboardVisible] = useState(true);
+  const [input, setInput] = useState('');
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-    api: '/api/chat',
-    body: {
-      model: selectedModel,
-    },
-  });
+  const { messages, status, sendMessage } = useChat();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (input.trim()) {
+      sendMessage(
+        { text: input },
+        {
+          body: {
+            model: selectedModel,
+          },
+        }
+      );
+      setInput('');
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value);
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -27,7 +42,7 @@ export default function Home() {
           input={input}
           handleInputChange={handleInputChange}
           handleSubmit={handleSubmit}
-          isLoading={isLoading}
+          isLoading={status !== 'ready'}
           selectedModel={selectedModel}
           setSelectedModel={setSelectedModel}
           toggleSidebar={() => setIsDashboardVisible(!isDashboardVisible)}
