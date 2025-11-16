@@ -8,6 +8,7 @@ export async function GET() {
     });
     return NextResponse.json(todos);
   } catch (error) {
+    console.error('Error fetching todos:', error);
     return NextResponse.json({ error: 'Failed to fetch todos' }, { status: 500 });
   }
 }
@@ -31,6 +32,7 @@ export async function POST(req: Request) {
     });
     return NextResponse.json(todo);
   } catch (error) {
+    console.error('Error creating todo:', error);
     return NextResponse.json({ error: 'Failed to create todo' }, { status: 500 });
   }
 }
@@ -49,6 +51,7 @@ export async function PUT(req: Request) {
     });
     return NextResponse.json(todo);
   } catch (error) {
+    console.error('Error updating todo:', error);
     return NextResponse.json({ error: 'Failed to update todo' }, { status: 500 });
   }
 }
@@ -63,6 +66,7 @@ export async function DELETE(req: Request) {
     await prisma.nextSessionTodo.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error('Error deleting todo:', error);
     return NextResponse.json({ error: 'Failed to delete todo' }, { status: 500 });
   }
 }

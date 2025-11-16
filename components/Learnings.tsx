@@ -21,6 +21,9 @@ export function Learnings() {
     queryKey: ['learnings'],
     queryFn: async () => {
       const res = await fetch('/api/learnings');
+      if (!res.ok) {
+        throw new Error('Failed to fetch learnings');
+      }
       return res.json();
     },
   });

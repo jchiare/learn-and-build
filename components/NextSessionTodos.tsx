@@ -23,6 +23,9 @@ export function NextSessionTodos() {
     queryKey: ['next-session-todos'],
     queryFn: async () => {
       const res = await fetch('/api/next-session-todos');
+      if (!res.ok) {
+        throw new Error('Failed to fetch todos');
+      }
       return res.json();
     },
   });
