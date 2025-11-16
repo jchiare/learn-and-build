@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Card, TextInput, Textarea, Button, Text, Stack, Group, ActionIcon, Box } from '@mantine/core';
+import { IconEdit, IconTrash } from '@tabler/icons-react';
 
 type Learning = {
   id: string;
@@ -95,74 +97,78 @@ export function Learnings() {
   };
 
   return (
-    <div className="space-y-3">
+    <Stack gap="md" p="md">
       {!isAdding && (
-        <button
-          onClick={() => setIsAdding(true)}
-          className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-        >
+        <Button onClick={() => setIsAdding(true)} fullWidth>
           + Add Learning
-        </button>
+        </Button>
       )}
 
       {isAdding && (
-        <form onSubmit={handleSubmit} className="space-y-3 p-4 bg-gray-50 rounded-lg">
-          <input
-            type="text"
-            value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            placeholder="Title"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <textarea
-            value={formData.content}
-            onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-            placeholder="Content"
-            rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <div className="flex space-x-2">
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-400 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-            >
-              {editingId ? 'Update' : 'Save'}
-            </button>
-          </div>
-        </form>
+        <Card padding="md" withBorder>
+          <form onSubmit={handleSubmit}>
+            <Stack gap="md">
+              <TextInput
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                placeholder="Title"
+                autoFocus
+              />
+              <Textarea
+                value={formData.content}
+                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                placeholder="Content"
+                rows={4}
+              />
+              <Group gap="xs">
+                <Button variant="default" onClick={handleCancel} style={{ flex: 1 }}>
+                  Cancel
+                </Button>
+                <Button type="submit" style={{ flex: 1 }}>
+                  {editingId ? 'Update' : 'Save'}
+                </Button>
+              </Group>
+            </Stack>
+          </form>
+        </Card>
       )}
 
-      <div className="space-y-3">
+      <Stack gap="md">
         {learnings.map((learning) => (
-          <div key={learning.id} className="p-4 bg-white border border-gray-200 rounded-lg">
-            <div className="flex items-start justify-between mb-2">
-              <h3 className="font-semibold text-gray-800">{learning.title}</h3>
-              <div className="flex space-x-2">
-                <button
+          <Card key={learning.id} padding="md" withBorder>
+            <Group justify="space-between" align="flex-start" mb="sm">
+              <Text fw={600} style={{ flex: 1 }}>{learning.title}</Text>
+              <Group gap="xs">
+                <ActionIcon
+                  variant="subtle"
+                  color="blue"
                   onClick={() => handleEdit(learning)}
-                  className="text-blue-600 hover:text-blue-800 text-sm"
+                  size="sm"
                 >
-                  Edit
-                </button>
-                <button
+                  <IconEdit size={16} />
+                </ActionIcon>
+                <ActionIcon
+                  variant="subtle"
+                  color="red"
                   onClick={() => deleteMutation.mutate(learning.id)}
-                  className="text-red-600 hover:text-red-800 text-sm"
+                  size="sm"
                 >
-                  Delete
-                </button>
-              </div>
-            </div>
-            <p className="text-sm text-gray-600 whitespace-pre-wrap">{learning.content}</p>
-          </div>
+                  <IconTrash size={16} />
+                </ActionIcon>
+              </Group>
+            </Group>
+            <Text size="sm" c="dimmed" style={{ whiteSpace: 'pre-wrap' }}>
+              {learning.content}
+            </Text>
+          </Card>
         ))}
-      </div>
-    </div>
+      </Stack>
+
+      {learnings.length === 0 && !isAdding && (
+        <Box ta="center" py="xl">
+          <Text c="dimmed">No learnings yet.</Text>
+        </Box>
+      )}
+    </Stack>
   );
 }

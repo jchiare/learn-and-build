@@ -5,80 +5,69 @@ import { ProjectMemory } from './ProjectMemory';
 import { Learnings } from './Learnings';
 import { Goals } from './Goals';
 import { NextSessionTodos } from './NextSessionTodos';
+import { Paper, Tabs, ActionIcon, Box, Text } from '@mantine/core';
+import { IconX } from '@tabler/icons-react';
 
 type SidebarProps = {
   onClose: () => void;
 };
 
 export function Sidebar({ onClose }: SidebarProps) {
-  const [activeSection, setActiveSection] = useState<'next-session' | 'memory' | 'learning' | 'goals'>('next-session');
+  const [activeSection, setActiveSection] = useState<string>('next-session');
 
   return (
-    <div className="w-96 bg-white border-l border-gray-200 flex flex-col">
+    <Paper
+      w={384}
+      style={{
+        borderLeft: '1px solid var(--mantine-color-gray-3)',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%'
+      }}
+      radius={0}
+    >
       {/* Header */}
-      <div className="px-4 py-4 border-b border-gray-200 flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-800">Project Workspace</h2>
-        <button
-          onClick={onClose}
-          className="text-gray-500 hover:text-gray-700 transition-colors"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
+      <Box p="md" style={{ borderBottom: '1px solid var(--mantine-color-gray-3)' }}>
+        <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Text size="lg" fw={600}>Project Workspace</Text>
+          <ActionIcon variant="subtle" color="gray" onClick={onClose}>
+            <IconX size={20} />
+          </ActionIcon>
+        </Box>
+      </Box>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 overflow-x-auto">
-        <button
-          onClick={() => setActiveSection('next-session')}
-          className={`flex-1 px-3 py-3 text-xs font-medium transition-colors whitespace-nowrap ${
-            activeSection === 'next-session'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-600 hover:text-gray-800'
-          }`}
-        >
-          Next Session
-        </button>
-        <button
-          onClick={() => setActiveSection('memory')}
-          className={`flex-1 px-3 py-3 text-xs font-medium transition-colors whitespace-nowrap ${
-            activeSection === 'memory'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-600 hover:text-gray-800'
-          }`}
-        >
-          Memory
-        </button>
-        <button
-          onClick={() => setActiveSection('learning')}
-          className={`flex-1 px-3 py-3 text-xs font-medium transition-colors whitespace-nowrap ${
-            activeSection === 'learning'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-600 hover:text-gray-800'
-          }`}
-        >
-          Learning
-        </button>
-        <button
-          onClick={() => setActiveSection('goals')}
-          className={`flex-1 px-3 py-3 text-xs font-medium transition-colors whitespace-nowrap ${
-            activeSection === 'goals'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-600 hover:text-gray-800'
-          }`}
-        >
-          Goals
-        </button>
-      </div>
+      <Tabs value={activeSection} onChange={(value) => setActiveSection(value || 'next-session')} style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <Tabs.List>
+          <Tabs.Tab value="next-session" style={{ flex: 1, fontSize: '0.75rem' }}>
+            Next Session
+          </Tabs.Tab>
+          <Tabs.Tab value="memory" style={{ flex: 1, fontSize: '0.75rem' }}>
+            Memory
+          </Tabs.Tab>
+          <Tabs.Tab value="learning" style={{ flex: 1, fontSize: '0.75rem' }}>
+            Learning
+          </Tabs.Tab>
+          <Tabs.Tab value="goals" style={{ flex: 1, fontSize: '0.75rem' }}>
+            Goals
+          </Tabs.Tab>
+        </Tabs.List>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto">
-        {activeSection === 'next-session' && <NextSessionTodos />}
-        {activeSection === 'memory' && <ProjectMemory />}
-        {activeSection === 'learning' && <Learnings />}
-        {activeSection === 'goals' && <Goals />}
-      </div>
-    </div>
+        <Box style={{ flex: 1, overflowY: 'auto' }}>
+          <Tabs.Panel value="next-session">
+            <NextSessionTodos />
+          </Tabs.Panel>
+          <Tabs.Panel value="memory">
+            <ProjectMemory />
+          </Tabs.Panel>
+          <Tabs.Panel value="learning">
+            <Learnings />
+          </Tabs.Panel>
+          <Tabs.Panel value="goals">
+            <Goals />
+          </Tabs.Panel>
+        </Box>
+      </Tabs>
+    </Paper>
   );
 }

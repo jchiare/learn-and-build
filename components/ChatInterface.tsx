@@ -2,6 +2,7 @@
 
 import { UIMessage } from 'ai';
 import { FormEvent, ChangeEvent } from 'react';
+import { Paper, TextInput, Button, Select, Box, Text, Group, Loader, Stack } from '@mantine/core';
 
 type ChatInterfaceProps = {
   messages: UIMessage[];
@@ -27,86 +28,93 @@ export function ChatInterface({
   return (
     <>
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <h1 className="text-xl font-semibold text-gray-800">LLM Chat</h1>
-          <select
-            value={selectedModel}
-            onChange={(e) => setSelectedModel(e.target.value as 'gpt-5' | 'sonnet-4.5')}
-            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="gpt-5">GPT-5 (GPT-4o)</option>
-            <option value="sonnet-4.5">Sonnet 4.5</option>
-          </select>
-        </div>
-        <button
-          onClick={toggleSidebar}
-          className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          Toggle Sidebar
-        </button>
-      </div>
+      <Paper shadow="sm" p="md" radius={0} withBorder style={{ borderLeft: 'none', borderRight: 'none', borderTop: 'none' }}>
+        <Group justify="space-between">
+          <Group gap="md">
+            <Text size="xl" fw={600}>LLM Chat</Text>
+            <Select
+              value={selectedModel}
+              onChange={(value) => setSelectedModel(value as 'gpt-5' | 'sonnet-4.5')}
+              data={[
+                { value: 'gpt-5', label: 'GPT-5 (GPT-4o)' },
+                { value: 'sonnet-4.5', label: 'Sonnet 4.5' }
+              ]}
+              size="sm"
+              w={200}
+            />
+          </Group>
+          <Button variant="subtle" onClick={toggleSidebar}>
+            Toggle Sidebar
+          </Button>
+        </Group>
+      </Paper>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
-        {messages.length === 0 && (
-          <div className="flex items-center justify-center h-full text-gray-400">
-            <p>Start a conversation with your AI assistant</p>
-          </div>
-        )}
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
-            <div
-              className={`max-w-[70%] px-4 py-3 rounded-lg ${
-                message.role === 'user'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white text-gray-800 border border-gray-200'
-              }`}
+      <Box style={{ flex: 1, overflowY: 'auto' }} p="lg">
+        <Stack gap="md">
+          {messages.length === 0 && (
+            <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+              <Text c="dimmed">Start a conversation with your AI assistant</Text>
+            </Box>
+          )}
+          {messages.map((message) => (
+            <Box
+              key={message.id}
+              style={{ display: 'flex', justifyContent: message.role === 'user' ? 'flex-end' : 'flex-start' }}
             >
-              <p className="whitespace-pre-wrap">
-                {message.parts
-                  .map(part => (part.type === 'text' ? part.text : ''))
-                  .join('')}
-              </p>
-            </div>
-          </div>
-        ))}
-        {isLoading && (
-          <div className="flex justify-start">
-            <div className="max-w-[70%] px-4 py-3 rounded-lg bg-white text-gray-800 border border-gray-200">
-              <div className="flex space-x-2">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+              <Paper
+                p="md"
+                radius="md"
+                style={{
+                  maxWidth: '70%',
+                  backgroundColor: message.role === 'user' ? 'var(--mantine-color-blue-6)' : undefined,
+                  color: message.role === 'user' ? 'white' : undefined
+                }}
+                withBorder={message.role !== 'user'}
+              >
+                <Text style={{ whiteSpace: 'pre-wrap' }}>
+                  {message.parts
+                    .map(part => (part.type === 'text' ? part.text : ''))
+                    .join('')}
+                </Text>
+              </Paper>
+            </Box>
+          ))}
+          {isLoading && (
+            <Box style={{ display: 'flex', justifyContent: 'flex-start' }}>
+              <Paper p="md" radius="md" withBorder style={{ maxWidth: '70%' }}>
+                <Group gap="xs">
+                  <Loader size="xs" />
+                  <Text c="dimmed" size="sm">Thinking...</Text>
+                </Group>
+              </Paper>
+            </Box>
+          )}
+        </Stack>
+      </Box>
 
       {/* Input */}
-      <div className="bg-white border-t border-gray-200 px-6 py-4">
-        <form onSubmit={handleSubmit} className="flex space-x-4">
-          <input
-            type="text"
-            value={input || ''}
-            onChange={handleInputChange}
-            placeholder="Type your message..."
-            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            disabled={isLoading}
-          />
-          <button
-            type="submit"
-            disabled={isLoading || !input?.trim()}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            Send
-          </button>
+      <Paper shadow="sm" p="lg" radius={0} withBorder style={{ borderLeft: 'none', borderRight: 'none', borderBottom: 'none' }}>
+        <form onSubmit={handleSubmit}>
+          <Group gap="md" align="flex-start">
+            <TextInput
+              style={{ flex: 1 }}
+              value={input || ''}
+              onChange={handleInputChange}
+              placeholder="Type your message..."
+              disabled={isLoading}
+              size="md"
+            />
+            <Button
+              type="submit"
+              disabled={isLoading || !input?.trim()}
+              size="md"
+            >
+              Send
+            </Button>
+          </Group>
         </form>
-      </div>
+      </Paper>
     </>
   );
 }

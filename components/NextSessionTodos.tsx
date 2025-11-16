@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Card, Checkbox, TextInput, Textarea, Progress, Button, Text, Stack, Group, ActionIcon, Box } from '@mantine/core';
+import { IconEdit, IconTrash } from '@tabler/icons-react';
 
 type NextSessionTodo = {
   id: string;
@@ -104,123 +106,119 @@ export function NextSessionTodos() {
   const totalCount = todos.length;
 
   return (
-    <div className="space-y-3">
+    <Stack gap="md" p="md">
       {/* Progress Bar */}
       {totalCount > 0 && (
-        <div className="space-y-1">
-          <div className="flex justify-between text-xs text-gray-600">
-            <span>Progress</span>
-            <span>{completedCount}/{totalCount}</span>
-          </div>
-          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-blue-600 transition-all duration-300"
-              style={{ width: `${(completedCount / totalCount) * 100}%` }}
-            />
-          </div>
-        </div>
+        <Box>
+          <Group justify="space-between" mb="xs">
+            <Text size="xs" c="dimmed">Progress</Text>
+            <Text size="xs" c="dimmed">{completedCount}/{totalCount}</Text>
+          </Group>
+          <Progress
+            value={(completedCount / totalCount) * 100}
+            size="sm"
+            radius="xl"
+            animated={completedCount < totalCount}
+          />
+        </Box>
       )}
 
       {!isAdding && (
-        <button
-          onClick={() => setIsAdding(true)}
-          className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-        >
+        <Button onClick={() => setIsAdding(true)} fullWidth>
           + Add Todo
-        </button>
+        </Button>
       )}
 
       {isAdding && (
-        <form onSubmit={handleSubmit} className="space-y-3 p-4 bg-gray-50 rounded-lg">
-          <input
-            type="text"
-            value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            placeholder="What needs to be done?"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            autoFocus
-          />
-          <textarea
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            placeholder="Additional details (optional)"
-            rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <div className="flex space-x-2">
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-400 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-            >
-              {editingId ? 'Update' : 'Add'}
-            </button>
-          </div>
-        </form>
+        <Card padding="md" withBorder>
+          <form onSubmit={handleSubmit}>
+            <Stack gap="md">
+              <TextInput
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                placeholder="What needs to be done?"
+                autoFocus
+              />
+              <Textarea
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Additional details (optional)"
+                rows={3}
+              />
+              <Group gap="xs">
+                <Button variant="default" onClick={handleCancel} style={{ flex: 1 }}>
+                  Cancel
+                </Button>
+                <Button type="submit" style={{ flex: 1 }}>
+                  {editingId ? 'Update' : 'Add'}
+                </Button>
+              </Group>
+            </Stack>
+          </form>
+        </Card>
       )}
 
-      <div className="space-y-2">
+      <Stack gap="sm">
         {todos.map((todo) => (
-          <div
+          <Card
             key={todo.id}
-            className={`p-3 bg-white border border-gray-200 rounded-lg ${
-              todo.completed ? 'opacity-60' : ''
-            }`}
+            padding="md"
+            withBorder
+            style={{ opacity: todo.completed ? 0.6 : 1 }}
           >
-            <div className="flex items-start gap-3">
-              <input
-                type="checkbox"
+            <Group align="flex-start" wrap="nowrap">
+              <Checkbox
                 checked={todo.completed}
                 onChange={() => handleToggleComplete(todo)}
-                className="mt-1 w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                mt={4}
               />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-2">
-                  <h3
-                    className={`font-medium text-gray-800 ${
-                      todo.completed ? 'line-through' : ''
-                    }`}
+              <Box style={{ flex: 1, minWidth: 0 }}>
+                <Group justify="space-between" align="flex-start" mb={todo.description ? 'xs' : 0}>
+                  <Text
+                    fw={500}
+                    style={{
+                      textDecoration: todo.completed ? 'line-through' : 'none',
+                      flex: 1
+                    }}
                   >
                     {todo.title}
-                  </h3>
-                  <div className="flex space-x-2 flex-shrink-0">
-                    <button
+                  </Text>
+                  <Group gap="xs">
+                    <ActionIcon
+                      variant="subtle"
+                      color="blue"
                       onClick={() => handleEdit(todo)}
-                      className="text-blue-600 hover:text-blue-800 text-xs"
+                      size="sm"
                     >
-                      Edit
-                    </button>
-                    <button
+                      <IconEdit size={16} />
+                    </ActionIcon>
+                    <ActionIcon
+                      variant="subtle"
+                      color="red"
                       onClick={() => deleteMutation.mutate(todo.id)}
-                      className="text-red-600 hover:text-red-800 text-xs"
+                      size="sm"
                     >
-                      Delete
-                    </button>
-                  </div>
-                </div>
+                      <IconTrash size={16} />
+                    </ActionIcon>
+                  </Group>
+                </Group>
                 {todo.description && (
-                  <p className="text-sm text-gray-600 mt-1 whitespace-pre-wrap">
+                  <Text size="sm" c="dimmed" style={{ whiteSpace: 'pre-wrap' }}>
                     {todo.description}
-                  </p>
+                  </Text>
                 )}
-              </div>
-            </div>
-          </div>
+              </Box>
+            </Group>
+          </Card>
         ))}
-      </div>
+      </Stack>
 
       {todos.length === 0 && !isAdding && (
-        <div className="text-center py-8 text-gray-400">
-          <p>No todos for next session yet.</p>
-          <p className="text-sm">Click &quot;Add Todo&quot; to get started!</p>
-        </div>
+        <Box ta="center" py="xl">
+          <Text c="dimmed">No todos for next session yet.</Text>
+          <Text size="sm" c="dimmed">Click "Add Todo" to get started!</Text>
+        </Box>
       )}
-    </div>
+    </Stack>
   );
 }
