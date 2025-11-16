@@ -21,6 +21,9 @@ export function ProjectMemory() {
     queryKey: ['memories'],
     queryFn: async () => {
       const res = await fetch('/api/memory');
+      if (!res.ok) {
+        throw new Error('Failed to fetch memories');
+      }
       return res.json();
     },
   });

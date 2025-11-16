@@ -8,6 +8,7 @@ export async function GET() {
     });
     return NextResponse.json(memories);
   } catch (error) {
+    console.error('Error fetching memories:', error);
     return NextResponse.json({ error: 'Failed to fetch memories' }, { status: 500 });
   }
 }
@@ -20,6 +21,7 @@ export async function POST(req: Request) {
     });
     return NextResponse.json(memory);
   } catch (error) {
+    console.error('Error creating memory:', error);
     return NextResponse.json({ error: 'Failed to create memory' }, { status: 500 });
   }
 }
@@ -33,6 +35,7 @@ export async function PUT(req: Request) {
     });
     return NextResponse.json(memory);
   } catch (error) {
+    console.error('Error updating memory:', error);
     return NextResponse.json({ error: 'Failed to update memory' }, { status: 500 });
   }
 }
@@ -47,6 +50,7 @@ export async function DELETE(req: Request) {
     await prisma.projectMemory.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error('Error deleting memory:', error);
     return NextResponse.json({ error: 'Failed to delete memory' }, { status: 500 });
   }
 }
