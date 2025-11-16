@@ -1,5 +1,7 @@
 # Supabase PostgreSQL Connection (from Vercel Supabase Integration)
 # Pooled connection for serverless functions
+# Note: The lib/prisma.ts file automatically adds connection_limit=1 and pool_timeout=0
+# to prevent "prepared statement already exists" errors with PgBouncer
 DATABASE_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres?pgbouncer=true"
 # Direct connection for migrations
 DIRECT_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres"

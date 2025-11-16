@@ -144,6 +144,26 @@ learn-and-build/
 - `DELETE /api/memory?id=<id>` - Delete memory
 - Similar endpoints for `/api/learnings` and `/api/goals`
 
+## Troubleshooting
+
+### "Prepared statement already exists" Error
+
+If you encounter the error `prepared statement "s0" already exists` with PgBouncer:
+
+**Cause**: This happens when using Supabase's connection pooler (PgBouncer) in transaction mode, which doesn't support named prepared statements well in serverless environments.
+
+**Solution**: The application automatically handles this by:
+1. Detecting PgBouncer in the `DATABASE_URL` (via `pgbouncer=true` parameter)
+2. Adding `connection_limit=1` to limit connections per serverless function instance
+3. Adding `pool_timeout=0` to prevent connection pooling timeouts
+
+This configuration is applied in `lib/prisma.ts` automatically, so no manual intervention is needed.
+
+**Manual Override** (if needed): You can manually add these parameters to your `DATABASE_URL`:
+```
+DATABASE_URL="postgresql://...?pgbouncer=true&connection_limit=1&pool_timeout=0"
+```
+
 ## License
 
 MIT
