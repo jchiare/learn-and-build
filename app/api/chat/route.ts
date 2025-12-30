@@ -3,8 +3,6 @@ import { anthropic } from '@ai-sdk/anthropic';
 import { streamText } from 'ai';
 import { prisma } from '@/lib/prisma';
 
-export const runtime = 'edge';
-
 export async function POST(req: Request) {
   const { messages, model } = await req.json();
 
