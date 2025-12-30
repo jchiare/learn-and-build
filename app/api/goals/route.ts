@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { db } from '@/lib/db';
+import { goals } from '@/lib/schema';
+import { eq, desc } from 'drizzle-orm';
 
 export async function GET() {
   try {
-    const goals = await prisma.goal.findMany({
-      orderBy: { updatedAt: 'desc' },
-    });
-    return NextResponse.json(goals);
+    const allGoals = await db.select().from(goals).orderBy(desc(goals.updatedAt));
+    return NextResponse.json(allGoals);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch goals' }, { status: 500 });
   }
@@ -15,9 +15,11 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const { title, description, status } = await req.json();
-    const goal = await prisma.goal.create({
-      data: { title, description, status: status || 'active' },
-    });
+    const [goal] = await db.insert(goals).values({
+      title,
+      description,
+      status: status || 'active',
+    }).returning();
     return NextResponse.json(goal);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to create goal' }, { status: 500 });
@@ -27,10 +29,10 @@ export async function POST(req: Request) {
 export async function PUT(req: Request) {
   try {
     const { id, title, description, status } = await req.json();
-    const goal = await prisma.goal.update({
-      where: { id },
-      data: { title, description, status },
-    });
+    const [goal] = await db.update(goals)
+      .set({ title, description, status, updatedAt: new Date() })
+      .where(eq(goals.id, id))
+      .returning();
     return NextResponse.json(goal);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to update goal' }, { status: 500 });
@@ -44,7 +46,7 @@ export async function DELETE(req: Request) {
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
-    await prisma.goal.delete({ where: { id } });
+    await db.delete(goals).where(eq(goals.id, id));
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to delete goal' }, { status: 500 });

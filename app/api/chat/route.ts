@@ -1,7 +1,8 @@
 import { openai } from '@ai-sdk/openai';
 import { anthropic } from '@ai-sdk/anthropic';
 import { streamText } from 'ai';
-import { prisma } from '@/lib/prisma';
+import { db } from '@/lib/db';
+import { chatMessages } from '@/lib/schema';
 
 export async function POST(req: Request) {
   const { messages, model } = await req.json();
@@ -20,12 +21,10 @@ export async function POST(req: Request) {
   // Save messages to database (async, don't await to not block response)
   const lastUserMessage = messages[messages.length - 1];
   if (lastUserMessage) {
-    prisma.chatMessage.create({
-      data: {
-        role: 'user',
-        content: lastUserMessage.content,
-        model,
-      },
+    db.insert(chatMessages).values({
+      role: 'user',
+      content: lastUserMessage.content,
+      model,
     }).catch(console.error);
   }
 

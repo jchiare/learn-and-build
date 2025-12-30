@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { db } from '@/lib/db';
+import { projectMemories } from '@/lib/schema';
+import { eq, desc } from 'drizzle-orm';
 
 export async function GET() {
   try {
-    const memories = await prisma.projectMemory.findMany({
-      orderBy: { updatedAt: 'desc' },
-    });
+    const memories = await db.select().from(projectMemories).orderBy(desc(projectMemories.updatedAt));
     return NextResponse.json(memories);
   } catch (error) {
     console.error('Error fetching memories:', error);
@@ -16,9 +16,10 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const { title, content } = await req.json();
-    const memory = await prisma.projectMemory.create({
-      data: { title, content },
-    });
+    const [memory] = await db.insert(projectMemories).values({
+      title,
+      content,
+    }).returning();
     return NextResponse.json(memory);
   } catch (error) {
     console.error('Error creating memory:', error);
@@ -29,10 +30,10 @@ export async function POST(req: Request) {
 export async function PUT(req: Request) {
   try {
     const { id, title, content } = await req.json();
-    const memory = await prisma.projectMemory.update({
-      where: { id },
-      data: { title, content },
-    });
+    const [memory] = await db.update(projectMemories)
+      .set({ title, content, updatedAt: new Date() })
+      .where(eq(projectMemories.id, id))
+      .returning();
     return NextResponse.json(memory);
   } catch (error) {
     console.error('Error updating memory:', error);
@@ -47,7 +48,7 @@ export async function DELETE(req: Request) {
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
-    await prisma.projectMemory.delete({ where: { id } });
+    await db.delete(projectMemories).where(eq(projectMemories.id, id));
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error deleting memory:', error);

@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { db } from '@/lib/db';
+import { learnings } from '@/lib/schema';
+import { eq, desc } from 'drizzle-orm';
 
 export async function GET() {
   try {
-    const learnings = await prisma.learning.findMany({
-      orderBy: { updatedAt: 'desc' },
-    });
-    return NextResponse.json(learnings);
+    const allLearnings = await db.select().from(learnings).orderBy(desc(learnings.updatedAt));
+    return NextResponse.json(allLearnings);
   } catch (error) {
     console.error('Error fetching learnings:', error);
     return NextResponse.json({ error: 'Failed to fetch learnings' }, { status: 500 });
@@ -16,9 +16,10 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const { title, content } = await req.json();
-    const learning = await prisma.learning.create({
-      data: { title, content },
-    });
+    const [learning] = await db.insert(learnings).values({
+      title,
+      content,
+    }).returning();
     return NextResponse.json(learning);
   } catch (error) {
     console.error('Error creating learning:', error);
@@ -29,10 +30,10 @@ export async function POST(req: Request) {
 export async function PUT(req: Request) {
   try {
     const { id, title, content } = await req.json();
-    const learning = await prisma.learning.update({
-      where: { id },
-      data: { title, content },
-    });
+    const [learning] = await db.update(learnings)
+      .set({ title, content, updatedAt: new Date() })
+      .where(eq(learnings.id, id))
+      .returning();
     return NextResponse.json(learning);
   } catch (error) {
     console.error('Error updating learning:', error);
@@ -47,7 +48,7 @@ export async function DELETE(req: Request) {
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
-    await prisma.learning.delete({ where: { id } });
+    await db.delete(learnings).where(eq(learnings.id, id));
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error deleting learning:', error);
